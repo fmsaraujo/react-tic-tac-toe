@@ -19,17 +19,16 @@ export default function Board({ xIsNext, squares, onPlay }) {
         status = `Winner: ${result}`;
     }
 
-    const rows = [];
-    for (let i = 0; i < 3; i++) {
-        const cols = [];
+    var rowSquares = (rowIndex) => [...Array(3).keys()]
+        .map(i => {
+            var squareIndex = rowIndex * 3 + i;
+            return <Square key={squareIndex} value={squares[squareIndex]} onSquareClick={() => handleClick(squareIndex)} />;
+        });
 
-        for (let j = 0; j < 3; j++) {
-            let squareIndex = i * 3 + j;
-            cols.push(<Square key={squareIndex} value={squares[squareIndex]} onSquareClick={() => handleClick(squareIndex)} />);
-        }
-
-        rows.push(<div key={i} className="board-row">{cols}</div>);
-    }
+    var rows = [...Array(3).keys()]
+        .map(i => (
+            <div key={i} className="board-row">{rowSquares(i)}</div>
+        ));
 
     return (
         <>

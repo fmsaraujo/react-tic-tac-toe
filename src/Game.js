@@ -3,6 +3,7 @@ import Board from "./Board";
 
 export default function Game() {
     const [history, setHistory] = useState([Array(9).fill(null)]);
+    const [isAscendingHistory, setIsAscendingHistory] = useState(false);
     const [currentMove, setCurrentMove] = useState(0);
 
     const currentSquares = history[currentMove];
@@ -19,7 +20,7 @@ export default function Game() {
         setCurrentMove(nextMove);
     }
 
-    const moves = history.map((squares, move) => {
+    let moves = history.map((squares, move) => {
         let description;
 
         if (move == currentMove) {
@@ -44,6 +45,10 @@ export default function Game() {
         );
     });
 
+    if (isAscendingHistory === false) {
+        moves = moves.reverse();
+    }
+
     return (
         <div className="game">
             <div className="game-board">
@@ -51,6 +56,7 @@ export default function Game() {
             </div>
             <div className="game-info">
                 <ol>{moves}</ol>
+                <button onClick={() => setIsAscendingHistory(!isAscendingHistory)}>Toggle Sort</button>
             </div>
         </div>
     );

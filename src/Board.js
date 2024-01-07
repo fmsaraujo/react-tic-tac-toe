@@ -15,14 +15,18 @@ export default function Board({ xIsNext, squares, onPlay }) {
     if (!result) {
         status = `Next player: ${xIsNext ? "X" : "O"}`;
     }
-    else {
-        status = `Winner: ${result}`;
+    else if (result.winner) {
+        status = `Winner: ${result.winner}`;
+    }
+    else if (result.draw) {
+        status = `It's a draw!`;
     }
 
     var rowSquares = (rowIndex) => [...Array(3).keys()]
         .map(i => {
             var squareIndex = rowIndex * 3 + i;
-            return <Square key={squareIndex} value={squares[squareIndex]} onSquareClick={() => handleClick(squareIndex)} />;
+            const isHighlighted = result && result.winner && result.winningSquares.indexOf(squareIndex) != -1;
+            return <Square key={squareIndex} value={squares[squareIndex]} isHighlighted={isHighlighted} onSquareClick={() => handleClick(squareIndex)} />;
         });
 
     var rows = [...Array(3).keys()]
@@ -38,9 +42,9 @@ export default function Board({ xIsNext, squares, onPlay }) {
     )
 }
 
-function Square({ value, onSquareClick }) {
+function Square({ value, isHighlighted, onSquareClick }) {
     return (
-        <button className="square" onClick={onSquareClick}>
+        <button className={`square ${isHighlighted ? "highlighted" : ""}`} onClick={onSquareClick}>
             {value}
         </button>
     );
@@ -62,8 +66,17 @@ function calculateWinner(squares) {
         const [a, b, c] = lines[i];
 
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-            return squares[a];
+            return {
+                winner: squares[a],
+                winningSquares: [a, b, c]
+            };
         }
+    }
+
+    if (squares.every(s => s !== null)) {
+        return {
+            draw: true
+        };
     }
 
     return null;

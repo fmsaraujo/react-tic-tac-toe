@@ -3,16 +3,19 @@ import Board from "./Board";
 
 export default function Game() {
     const [history, setHistory] = useState([Array(9).fill(null)]);
+    const [playbook, setPlaybook] = useState(Array(9).fill(null));
     const [isAscendingHistory, setIsAscendingHistory] = useState(false);
     const [currentMove, setCurrentMove] = useState(0);
 
     const currentSquares = history[currentMove];
     const xIsNext = currentMove % 2 == 0;
 
-    function handlePlay(nextSquares) {
+    function handlePlay(nextPlay, nextSquares) {
         const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+        const nextPlaybook = [...playbook.slice(0, currentMove + 1), nextPlay];
 
         setHistory(nextHistory);
+        setPlaybook(nextPlaybook);
         setCurrentMove(nextHistory.length - 1);
     }
 
@@ -23,10 +26,14 @@ export default function Game() {
     let moves = history.map((squares, move) => {
         let description;
 
+        const play = playbook[move]
+            ? ` ('${playbook[move].player}' on row ${playbook[move].row}, col ${playbook[move].col})`
+            : '';
+
         if (move == currentMove) {
             return (
                 <li key={move}>
-                    You are at move #{move}
+                    You are at move #{move}{play}
                 </li>
             )
         }
@@ -35,7 +42,7 @@ export default function Game() {
             description = 'Go to game start';
         }
         else {
-            description = `Go to move #${move}`;
+            description = `Go to move #${move}${play}`;
         }
 
         return (

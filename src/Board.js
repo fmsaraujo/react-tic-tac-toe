@@ -7,7 +7,9 @@ export default function Board({ xIsNext, squares, onPlay }) {
         const nextSquares = squares.slice();
         nextSquares[i] = xIsNext ? "X" : "O";
 
-        onPlay(nextSquares);
+        const play = { player: nextSquares[i], row: Math.floor(i / 3), col: i % 3 };
+
+        onPlay(play, nextSquares);
     }
 
     const result = calculateWinner(squares);
